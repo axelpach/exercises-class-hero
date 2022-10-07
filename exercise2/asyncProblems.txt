@@ -1,0 +1,13 @@
+// return status string or error message
+function getStatus(profile){
+    if(profile?.status){
+        return profile.status;
+    }
+    getProfileAsync(profile)
+    .then((profile) => {
+        return profile.status;
+    })
+    .catch(e => {
+        return `Error: ${e}`;
+    })
+}
