@@ -40,6 +40,7 @@ async function task(taskLetter, dependendantOn){
                     console.log(string, data); 
                 })
                 .catch(e => console.log(e)),
+                //CHANGE MADE: We just call with an await the first part of task a and after that we call to make the other parts 
                 taskA(n)
                     .then((string) => {   
                         data.push('part 5 of a');                     
