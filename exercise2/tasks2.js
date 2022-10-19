@@ -16,29 +16,37 @@ timeOuts = {
 
 //Number of chunks of data to be subdivided in
 let n = 5;
+let data = ['tasks done: ']
 
 async function task(taskLetter, dependendantOn){   
        
     for (let i = 0; i < dependendantOn.length; i++){
         await task(dependendantOn[i], dependencies[dependendantOn[i]])
         .then((string) => {
-            string && console.log(string);
+            data.push(dependendantOn[i]);
+            string && console.log(string, data);                                    
         })
         .catch(e => console.log(e));
     }  
     
     // To break in smaller chunks of data I would use recursion 
     // taskA is a function that will iterate n times through the data
-    if(taskLetter == 'a'){
-        return new Promise((resolve, reject) => {
+    if(taskLetter == 'a'){        
+        return new Promise(async (resolve, reject) => {
             resolve(
-                taskA(n)
-                .then((string) => {
-                    console.log(string);
+                await taskA(1)
+                .then((string) => {                    
+                    data.push('part 1 of a');
+                    console.log(string, data); 
                 })
-                .catch(e => console.log(e))
+                .catch(e => console.log(e)),
+                taskA(n)
+                    .then((string) => {   
+                        data.push('part 5 of a');                     
+                        console.log(string, data)
+                    }) 
             );
-        })                
+        })                        
     } else {
         return new Promise((resolve, reject) => {        
             setTimeout(function () {    
@@ -52,11 +60,13 @@ async function task(taskLetter, dependendantOn){
 }
 
 async function taskA(chunk){
-
-    if (chunk > 1 ){
+    
+    if (chunk > 2 ){
         await (taskA(chunk - 1))
         .then((string) => {
-            console.log(string);
+            let chunkToPass = chunk - 1
+            data.push('part ' + chunkToPass + ' of a');
+            console.log(string, data);
         })
         .catch(e => console.log(e));
         ;
@@ -64,7 +74,7 @@ async function taskA(chunk){
 
     return new Promise((resolve, reject) => {
         setTimeout(function(){
-            resolve('part ' + chunk + ' of task "a" done');
+            resolve('part ' + chunk + ' of task "a" done');            
         }, timeOuts['a']/n);
     })
 }
@@ -72,7 +82,8 @@ async function taskA(chunk){
 
 task('e', dependencies['e'])
 .then((string) => {   
-    console.log(string); 
+    data.push('e');
+    console.log(string, data); 
 })
 .catch(e => console.log(e))
 ;
